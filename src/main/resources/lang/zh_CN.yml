@@ -1,0 +1,16 @@
+admin:
+  script:
+    cannot_load: "无法加载脚本目录"
+    cannot_load_single: "无法加载脚本文件 \"%s\""
+    rte: "脚本执行错误(%s)%s"
+
+manual:
+  no_description: "缺少描述"
+  no_usage: "缺少示例"
+
+  help:
+    description: "显示帮助信息"
+    usage: "/gt [子命令...] help"
+  debug:
+    description: "调试命令"
+    usage: "/gt debug"
