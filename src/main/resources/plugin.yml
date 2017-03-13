@@ -1,5 +1,6 @@
 name: GenericItems
-main: me.recursiveg.generictools.GenericTools: "Create highly customizable weapons and tools"
+main: me.recursiveg.generictools.GenericTools
+description: "Create highly customizable weapons and tools"
 version: 0.1
 depend: [NyaaUtils]
 authors: [RecursiveG]
