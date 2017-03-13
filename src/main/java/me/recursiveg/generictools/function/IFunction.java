@@ -1,7 +1,6 @@
 package me.recursiveg.generictools.function;
 
 import cat.nyaa.utils.ISerializable;
-import me.recursiveg.generictools.config.ItemTemplate;
 import me.recursiveg.generictools.runtime.WrappedItemStack;
 import org.bukkit.event.Event;
 
@@ -14,22 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IFunction extends ISerializable {
+
+    String name();
+
     /**
      * Dynamically decide which accept() method to call
      * Or override this method to accept everything
      *
-     * @param e
-     * @param template
-     * @param itemStack
-     * @return
+     * @return the event to be passed to next Function. Or `null` to terminate the chain.
      */
-    default Event accept(Event e, ItemTemplate template, WrappedItemStack itemStack) {
+    default Event accept(Event e, WrappedItemStack wis) {
         if (e == null) return null;
         Class<? extends Event> cls = e.getClass();
         List<Method> candidates = new ArrayList<>();
         for (Method m : this.getClass().getDeclaredMethods()) {
             if (m.isAnnotationPresent(Acceptor.class)) {
-                if (m.getParameterCount() == 1 && m.getReturnType() == Event.class) {
+                // Event foo(? extends Event ev, WrappedItemStack wis)
+                if (m.getParameterCount() == 2 && m.getReturnType() == Event.class && m.getParameterTypes()[1] == WrappedItemStack.class) {
                     Class<?> c = m.getParameterTypes()[0];
                     if (c.isAssignableFrom(cls) && Event.class.isAssignableFrom(c)) {
                         candidates.add(m);
@@ -51,13 +51,17 @@ public interface IFunction extends ISerializable {
         }
 
         try {
-            Object ret = topm.invoke(this, e);
+            Object ret = topm.invoke(this, e, wis);
             return (Event) ret;
         } catch (ReflectiveOperationException ex) {
             return null;
         }
     }
 
+    /**
+     * Every Acceptor method should have following signature:
+     * Event foo(? extends Event ev, WrappedItemStack wis)
+     */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Acceptor {

@@ -1,13 +1,12 @@
 package de_tr7zw_itemnbtapi;
 
-import java.util.Set;
-import java.util.Stack;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * Copied from tr7zw's ItemNBT API plugin
@@ -127,7 +126,7 @@ public class NBTReflectionUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static Object getSubNBTTagCompound(Object compound, String name){
+    public static Object getSubNBTTagCompound(Object compound, String name) {
         @SuppressWarnings("rawtypes")
         Class c = compound.getClass();
         java.lang.reflect.Method method;
@@ -141,8 +140,8 @@ public class NBTReflectionUtil {
         return null;
     }
 
-    public static ItemStack addNBTTagCompound(ItemStack item, NBTCompound comp, String name){
-        if(name == null)return remove(item, comp, name);
+    public static ItemStack addNBTTagCompound(ItemStack item, NBTCompound comp, String name) {
+        if (name == null) return remove(item, comp, name);
         Object nmsitem = getNMSItemStack(item);
         if (nmsitem == null) {
             System.out.println("Got null! (Outdated Plugin?)");
@@ -152,7 +151,7 @@ public class NBTReflectionUtil {
         if (nbttag == null) {
             nbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return item;
+        if (!valideCompound(item, comp)) return item;
         Object workingtag = gettoCompount(nbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -166,7 +165,7 @@ public class NBTReflectionUtil {
         return item;
     }
 
-    public static Boolean valideCompound(ItemStack item, NBTCompound comp){
+    public static Boolean valideCompound(ItemStack item, NBTCompound comp) {
         Object root = getRootNBTTagCompound(getNMSItemStack(item));
         if (root == null) {
             root = getNewNBTTag();
@@ -174,15 +173,15 @@ public class NBTReflectionUtil {
         return (gettoCompount(root, comp)) != null;
     }
 
-    private static Object gettoCompount(Object nbttag, NBTCompound comp){
+    private static Object gettoCompount(Object nbttag, NBTCompound comp) {
         Stack<String> structure = new Stack<>();
-        while(comp.getParent() != null){
+        while (comp.getParent() != null) {
             structure.add(comp.getName());
             comp = comp.getParent();
         }
-        while(!structure.isEmpty()){
+        while (!structure.isEmpty()) {
             nbttag = getSubNBTTagCompound(nbttag, structure.pop());
-            if(nbttag == null){
+            if (nbttag == null) {
                 return null;
             }
         }
@@ -190,7 +189,7 @@ public class NBTReflectionUtil {
     }
 
     public static ItemStack setString(ItemStack item, NBTCompound comp, String key, String text) {
-        if(text == null)return remove(item, comp, key);
+        if (text == null) return remove(item, comp, key);
         Object nmsitem = getNMSItemStack(item);
         if (nmsitem == null) {
             System.out.println("Got null! (Outdated Plugin?)");
@@ -200,7 +199,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return item;
+        if (!valideCompound(item, comp)) return item;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -224,7 +223,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return null;
+        if (!valideCompound(item, comp)) return null;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -237,7 +236,7 @@ public class NBTReflectionUtil {
     }
 
     public static ItemStack setInt(ItemStack item, NBTCompound comp, String key, Integer i) {
-        if(i == null)return remove(item, comp, key);
+        if (i == null) return remove(item, comp, key);
         Object nmsitem = getNMSItemStack(item);
         if (nmsitem == null) {
             System.out.println("Got null! (Outdated Plugin?)");
@@ -247,7 +246,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return item;
+        if (!valideCompound(item, comp)) return item;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -271,7 +270,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return null;
+        if (!valideCompound(item, comp)) return null;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -284,7 +283,7 @@ public class NBTReflectionUtil {
     }
 
     public static ItemStack setDouble(ItemStack item, NBTCompound comp, String key, Double d) {
-        if(d == null)return remove(item, comp, key);
+        if (d == null) return remove(item, comp, key);
         Object nmsitem = getNMSItemStack(item);
         if (nmsitem == null) {
             System.out.println("Got null! (Outdated Plugin?)");
@@ -294,7 +293,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return item;
+        if (!valideCompound(item, comp)) return item;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -318,7 +317,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return null;
+        if (!valideCompound(item, comp)) return null;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -331,7 +330,7 @@ public class NBTReflectionUtil {
     }
 
     public static ItemStack setBoolean(ItemStack item, NBTCompound comp, String key, Boolean d) {
-        if(d == null)return remove(item, comp, key);
+        if (d == null) return remove(item, comp, key);
         Object nmsitem = getNMSItemStack(item);
         if (nmsitem == null) {
             System.out.println("Got null! (Outdated Plugin?)");
@@ -341,7 +340,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return item;
+        if (!valideCompound(item, comp)) return item;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -365,7 +364,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return null;
+        if (!valideCompound(item, comp)) return null;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -389,7 +388,7 @@ public class NBTReflectionUtil {
 
     public static <T> T getObject(ItemStack item, NBTCompound comp, String key, Class<T> type) {
         String json = getString(item, comp, key);
-        if(json == null){
+        if (json == null) {
             return null;
         }
         try {
@@ -419,7 +418,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return item;
+        if (!valideCompound(item, comp)) return item;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -443,7 +442,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return null;
+        if (!valideCompound(item, comp)) return null;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {
@@ -466,7 +465,7 @@ public class NBTReflectionUtil {
         if (rootnbttag == null) {
             rootnbttag = getNewNBTTag();
         }
-        if(!valideCompound(item, comp))return null;
+        if (!valideCompound(item, comp)) return null;
         Object workingtag = gettoCompount(rootnbttag, comp);
         java.lang.reflect.Method method;
         try {

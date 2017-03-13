@@ -1,7 +1,8 @@
 package de_tr7zw_itemnbtapi;
 
-import java.util.Set;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Set;
 
 /**
  * Copied from tr7zw's ItemNBT API plugin
@@ -18,7 +19,7 @@ public class NBTCompound {
         this.parent = owner;
     }
 
-    public String getName(){
+    public String getName() {
         return compundname;
     }
 
@@ -26,11 +27,11 @@ public class NBTCompound {
         return parent.getItem();
     }
 
-    public NBTCompound getParent(){
+    public NBTCompound getParent() {
         return parent;
     }
 
-    protected void setItem(ItemStack item){
+    protected void setItem(ItemStack item) {
         parent.setItem(item);
     }
 
@@ -78,22 +79,22 @@ public class NBTCompound {
         return NBTReflectionUtil.hasKey(getItem(), this, key);
     }
 
-    public void removeKey(String key){
+    public void removeKey(String key) {
         setItem(NBTReflectionUtil.remove(getItem(), this, key));
     }
 
-    public Set<String> getKeys(){
+    public Set<String> getKeys() {
         return NBTReflectionUtil.getKeys(getItem(), this);
     }
 
-    public NBTCompound addCompound(String name){
+    public NBTCompound addCompound(String name) {
         setItem(NBTReflectionUtil.addNBTTagCompound(getItem(), this, name));
         return getCompound(name);
     }
 
-    public NBTCompound getCompound(String name){
+    public NBTCompound getCompound(String name) {
         NBTCompound next = new NBTCompound(this, name);
-        if(NBTReflectionUtil.valideCompound(getItem(), next))return next;
+        if (NBTReflectionUtil.valideCompound(getItem(), next)) return next;
         return null;
     }
 

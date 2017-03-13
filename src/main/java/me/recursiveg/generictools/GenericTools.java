@@ -1,5 +1,6 @@
 package me.recursiveg.generictools;
 
+import me.recursiveg.generictools.runtime.FunctionManager;
 import me.recursiveg.generictools.runtime.ScriptsManager;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.event.HandlerList;
@@ -13,6 +14,7 @@ public class GenericTools extends JavaPlugin {
     public Configuration cfg;
     public CommandHandler cmd;
     public ScriptsManager script;
+    public FunctionManager funcMgr;
 
     //private final List functions = new ArrayList();
     //private final Map<String, Listener> listeners = new HashMap<>();
@@ -20,6 +22,7 @@ public class GenericTools extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        funcMgr = new FunctionManager(this);
         cfg = new Configuration(this);
         cfg.load();
         i18n = new I18n(this, cfg.language);

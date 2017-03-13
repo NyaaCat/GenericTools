@@ -9,6 +9,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class TrigRightClickAir implements ITrigger {
     public static final String NAME = "right_click_air";
 
+    @Override
+    public String name() {
+        return NAME;
+    }
+
     @EventHandler
     public void onRightClickAir(PlayerInteractEvent ev) {
         if (ev.getAction() == Action.RIGHT_CLICK_AIR) {

@@ -22,12 +22,12 @@ public class CommandHandler extends CommandReceiver<GenericTools> {
     @SubCommand("debug")
     public void debugCommand(CommandSender sender, Arguments args) {
         ItemStack item = getItemInHand(sender);
-        WrappedItemStack wis = new WrappedItemStack(item);
+        WrappedItemStack wis = new WrappedItemStack(item, null);
         if ("write".equals(args.next())) {
             wis.setString("test.key", args.next());
             wis.commit();
             sender.sendMessage("Done");
-        } else if (wis.hasKey("test.key")){
+        } else if (wis.hasKey("test.key")) {
             sender.sendMessage("Key is: " + wis.getString("test.key"));
         } else {
             sender.sendMessage("Key not found.");
