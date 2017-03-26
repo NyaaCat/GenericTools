@@ -59,4 +59,10 @@ public class FunctionManager {
             return null;
         }
     }
+
+    public void registerTriggerListeners() {
+        for (String name : triggers.keySet()) {
+            plugin.getServer().getPluginManager().registerEvents(getTriggerInstance(name), plugin);
+        }
+    }
 }

@@ -26,18 +26,18 @@ public class I18n extends Internationalization {
     }
 
     public void severe(String key, Object... args) {
-        plugin.getLogger().severe(_(key, args));
+        plugin.getLogger().severe(format(key, args));
     }
 
     public void warn(String key, Object... args) {
-        plugin.getLogger().warning(_(key, args));
+        plugin.getLogger().warning(format(key, args));
     }
 
     public void info(String key, Object... args) {
-        plugin.getLogger().info(_(key, args));
+        plugin.getLogger().info(format(key, args));
     }
 
-    public static String _(String key, Object... args) {
+    public static String format(String key, Object... args) {
         return instance.get(key, args);
     }
 }

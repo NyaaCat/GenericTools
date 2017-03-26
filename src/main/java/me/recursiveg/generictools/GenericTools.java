@@ -30,6 +30,7 @@ public class GenericTools extends JavaPlugin {
         script = new ScriptsManager(this);
         getCommand(PLUGIN_COMMAND_NAME).setExecutor(cmd);
         getCommand(PLUGIN_COMMAND_NAME).setTabCompleter((TabCompleter) cmd);
+        funcMgr.registerTriggerListeners();
     }
 
     @Override

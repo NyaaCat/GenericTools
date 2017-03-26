@@ -9,6 +9,7 @@ public class Configuration extends PluginConfigure {
 
     public Configuration(GenericTools plugin) {
         this.plugin = plugin;
+        items = new ItemDatabase(plugin);
     }
 
     @Override

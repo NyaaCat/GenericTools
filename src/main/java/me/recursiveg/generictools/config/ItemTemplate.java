@@ -12,6 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A template is a complete description about one particular tool/weapon.
+ * Including material, damageValue, lores, enchants, Function chains, etc.
+ *
+ * A template can be fully-instantiated, just like what RPGItem does.
+ * Or it can be partially-instantiated, in which cases only the Function chains are bound.
+ */
 public class ItemTemplate implements ISerializable {
     @Serializable
     public ItemStack item = new ItemStack(Material.AIR);

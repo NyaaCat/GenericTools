@@ -1,4 +1,4 @@
-name: GenericItems
+name: GenericTools
 main: me.recursiveg.generictools.GenericTools
 description: "Create highly customizable weapons and tools"
 version: 0.1
@@ -7,7 +7,7 @@ authors: [RecursiveG]
 
 commands:
   generictools:
-    description: The command for GenericItems
+    description: The command for GenericTools
     aliases: gt
     permission: gt.command
     permission-message: "You do not have the required permission: <permission>"
