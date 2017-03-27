@@ -1,9 +1,8 @@
 package me.recursiveg.generictools.function;
 
 import me.recursiveg.generictools.GenericTools;
-import me.recursiveg.generictools.runtime.WrappedItemStack;
+import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
 
 /**
  * Probably the most powerful Function
@@ -12,10 +11,10 @@ import org.bukkit.event.Event;
  * <p>
  * Standard main() method looks like this:
  * <pre>
- *     function main(event, scriptConfigString, wrappedItemStack, bukkitServer) {
+ *     function main(wrappedEvent, scriptConfigString, bukkitServer) {
  *         ...
- *         return event;
- *         // or return null to terminate the Function chain.
+ *         return wrappedEvent;
+ *         // never return null
  *     }
  * </pre>
  */
@@ -36,12 +35,12 @@ public class FuncJavascript implements IFunction {
     }
 
     @Override
-    public Event accept(Event e, WrappedItemStack wis) {
+    public WrappedEvent<?> accept(WrappedEvent<?> we) {
         try {
-            return (Event) GenericTools.instance.script.getScript(scriptName).invokeFunction(MAIN_FUNC, e, scriptConfig, wis, Bukkit.getServer());
+            return (WrappedEvent<?>) GenericTools.instance.script.getScript(scriptName).invokeFunction(MAIN_FUNC, we, scriptConfig, Bukkit.getServer());
         } catch (Exception ex) {
             ex.printStackTrace();
-            GenericTools.instance.i18n.severe("admin.script.rte", scriptName, e.toString());
+            GenericTools.instance.i18n.severe("admin.script.rte", scriptName, we.event.toString());
             throw new RuntimeException(ex);
         }
     }

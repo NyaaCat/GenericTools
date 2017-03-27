@@ -1,7 +1,8 @@
 package me.recursiveg.generictools.function;
 
+import cat.nyaa.utils.CommandReceiver;
 import cat.nyaa.utils.ISerializable;
-import me.recursiveg.generictools.runtime.WrappedItemStack;
+import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.event.Event;
 
 import java.lang.annotation.ElementType;
@@ -9,62 +10,74 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public interface IFunction extends ISerializable {
 
     String name();
 
     /**
+     * parse the arguments and fill in local fields
+     * Doing nothing by default
+     *
+     * @param args commandLine arguments
+     */
+    default void parseCommandLine(CommandReceiver.Arguments args) {
+    }
+
+    /**
      * Dynamically decide which accept() method to call
      * Or override this method to accept everything
      *
-     * @return the event to be passed to next Function. Or `null` to terminate the chain.
+     * @return the event to be passed to next Function. Never null
      */
-    default Event accept(Event e, WrappedItemStack wis) {
-        if (e == null) return null;
-        Class<? extends Event> cls = e.getClass();
-        List<Method> candidates = new ArrayList<>();
+    default WrappedEvent<?> accept(WrappedEvent<?> we) {
+        if (we == null) return null;
+        Class<? extends Event> cls = we.event.getClass();
+        Method acceptor = null;
+        Class<? extends Event> acceptedType = null;
         for (Method m : this.getClass().getDeclaredMethods()) {
             if (m.isAnnotationPresent(Acceptor.class)) {
-                // Event foo(? extends Event ev, WrappedItemStack wis)
-                if (m.getParameterCount() == 2 && m.getReturnType() == Event.class && m.getParameterTypes()[1] == WrappedItemStack.class) {
-                    Class<?> c = m.getParameterTypes()[0];
-                    if (c.isAssignableFrom(cls) && Event.class.isAssignableFrom(c)) {
-                        candidates.add(m);
+                Class<? extends Event> acceptableEventType = m.getAnnotation(Acceptor.class).value();
+                if (m.getParameterCount() == 1 &&
+                        m.getReturnType() == WrappedEvent.class &&
+                        m.getParameterTypes()[0] == WrappedEvent.class &&
+                        acceptableEventType.isAssignableFrom(cls)) {
+                    // current method accepts this event
+                    if (acceptor == null) {
+                        acceptor = m;
+                        acceptedType = acceptableEventType;
+                        continue;
+                    }
+                    if (acceptedType.isAssignableFrom(acceptableEventType)) {
+                        // current eventType is higher in inheritance
+                        acceptor = m;
+                        acceptedType = acceptableEventType;
                     }
                 }
             }
         }
-        if (candidates.isEmpty()) return null;
-        Method topm = candidates.get(0);
-        if (candidates.size() > 1) {
-            Class<?> top = topm.getParameterTypes()[0];
-            for (int i = 1; i < candidates.size(); i++) {
-                Class tmp = candidates.get(i).getParameterTypes()[0];
-                if (top.isAssignableFrom(tmp)) {
-                    top = tmp;
-                    topm = candidates.get(i);
-                }
-            }
+        if (acceptor == null) {
+            we.cancelled = true;
+            return we;
         }
 
         try {
-            Object ret = topm.invoke(this, e, wis);
-            return (Event) ret;
+            Object ret = acceptor.invoke(this, we);
+            return (WrappedEvent<?>) ret;
         } catch (ReflectiveOperationException ex) {
-            return null;
+            we.cancelled = true;
+            return we;
         }
     }
 
     /**
      * Every Acceptor method should have following signature:
-     * Event foo(? extends Event ev, WrappedItemStack wis)
+     * WrappedEvent<?> foo(WrappedEvent<?> ev)
      */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Acceptor {
+        Class<? extends Event> value() default Event.class;
     }
 
     @Target(ElementType.TYPE)

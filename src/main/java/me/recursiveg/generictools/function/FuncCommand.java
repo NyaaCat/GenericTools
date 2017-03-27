@@ -1,8 +1,7 @@
 package me.recursiveg.generictools.function;
 
-import me.recursiveg.generictools.runtime.WrappedItemStack;
+import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
 
 @IFunction.Function(FuncCommand.NAME)
 public class FuncCommand implements IFunction {
@@ -17,8 +16,8 @@ public class FuncCommand implements IFunction {
     }
 
     @Override
-    public Event accept(Event e, WrappedItemStack wis) {
+    public WrappedEvent<?> accept(WrappedEvent<?> we) {
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), commandString);
-        return e;
+        return we;
     }
 }

@@ -12,13 +12,15 @@ import java.util.Map;
 
 /**
  * Instantiated item NBT definition:
+ * <pre>
  * giSection:
  *   templateName: {String, can be null}
  *   attachedTemplates: {List<String>, can be null or empty list} // TODO: attachable template hasn't implemented
  *   data: {Map<String, Object>, for Function-Specific storage, such as cooldown time or remaining durability}
- *      key1: data1
- *      key2: data2
- *      ...
+ *     key1: data1
+ *     key2: data2
+ * </pre>
+ * ...
  */
 public class ItemDatabase extends FileConfigure {
     private final GenericTools plugin;
@@ -65,7 +67,7 @@ public class ItemDatabase extends FileConfigure {
      * @return found template or null
      */
     public ItemTemplate findTemplate(ItemStack stack) {
-        WrappedItemStack wis = new WrappedItemStack(stack, null);
+        WrappedItemStack wis = new WrappedItemStack(stack);
         String name = wis.getString("giSection.templateName");
         if (name == null) return null;
         return itemMap.get(name);
@@ -75,7 +77,7 @@ public class ItemDatabase extends FileConfigure {
         ItemTemplate template = itemMap.get(name);
         if (template == null) return null;
         ItemStack item = template.item.clone();
-        WrappedItemStack wis = new WrappedItemStack(item, template);
+        WrappedItemStack wis = new WrappedItemStack(item);
         wis.setString("giSection.templateName", name);
         wis.commit();
         return item;

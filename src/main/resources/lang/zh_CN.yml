@@ -4,6 +4,19 @@ admin:
     cannot_load_single: "无法加载脚本文件 \"%s\""
     rte: "脚本执行错误(%s)%s"
 
+function_help:
+  javascript:
+    description: 接受任意类型事件，并执行Javascript脚本
+    commandline:
+  command:
+    desctiption: 接受任意类型事件，并以控制台身份执行命令
+    commandline:
+
+trigger_help:
+  right_click_air:
+    description: 当玩家持有工具并右键空气时，触发PlayerInteractEvent
+    commandline:
+
 manual:
   no_description: "缺少描述"
   no_usage: "缺少示例"

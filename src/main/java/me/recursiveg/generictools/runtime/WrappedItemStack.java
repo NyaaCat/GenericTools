@@ -1,7 +1,6 @@
 package me.recursiveg.generictools.runtime;
 
 import de_tr7zw_itemnbtapi.NBTCompound;
-import me.recursiveg.generictools.config.ItemTemplate;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -14,13 +13,11 @@ public class WrappedItemStack extends NBTCompound {
     private final ItemStack wrappedItemStack;
     // A cloned item where all modification happens
     private ItemStack shadowItemStack;
-    public final ItemTemplate template;
 
-    public WrappedItemStack(ItemStack item, ItemTemplate template) {
+    public WrappedItemStack(ItemStack item) {
         super(null, null);
         wrappedItemStack = item;
         shadowItemStack = item.clone();
-        this.template = template;
     }
 
     @Override

@@ -23,26 +23,26 @@ public final class EventDispatcher {
     public static void dispatch(Event ev, ItemStack itemToCheck, Class<? extends ITrigger> triggerClass) {
         ItemTemplate template = GenericTools.instance.cfg.items.findTemplate(itemToCheck);
         if (template != null) {
-            WrappedItemStack wis = new WrappedItemStack(itemToCheck, template);
+            WrappedItemStack wis = new WrappedItemStack(itemToCheck);
             for (Map.Entry<Integer, ITrigger> e : template.triggers.entrySet()) {
                 if (e.getValue().getClass() == triggerClass) {
-                    passEvent(ev, wis, e.getValue(), template.triggerToFunctionPath.get(e.getKey()));
+                    passEvent(new WrappedEvent<>(ev, wis, template), e.getValue(), template.triggerToFunctionPath.get(e.getKey()));
                 }
             }
             wis.commit();
         }
     }
 
-    private static void passEvent(Event ev, WrappedItemStack wis, IFunction function, List<Integer> chainedFunctions) {
+    private static void passEvent(WrappedEvent<?> we, IFunction function, List<Integer> chainedFunctions) {
         try {
-            Event ret = function.accept(ev, wis);
-            if (ret != null && chainedFunctions != null && chainedFunctions.size() > 0) {
+            WrappedEvent<?> ret = function.accept(we);
+            if (ret != null && !ret.cancelled && chainedFunctions != null && chainedFunctions.size() > 0) {
                 for (Integer funcIdx : chainedFunctions) {
-                    passEvent(ret, wis, wis.template.functions.get(funcIdx), wis.template.functionToFunctionPath.get(funcIdx));
+                    passEvent(ret.getChainCopy(), ret.itemTemplate.functions.get(funcIdx), ret.itemTemplate.functionToFunctionPath.get(funcIdx));
                 }
             }
         } catch (Exception ex) {
-
+            // TODO
         }
     }
 }

@@ -1,8 +1,7 @@
 package me.recursiveg.generictools.trigger;
 
 import me.recursiveg.generictools.function.IFunction;
-import me.recursiveg.generictools.runtime.WrappedItemStack;
-import org.bukkit.event.Event;
+import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.event.Listener;
 
 import java.lang.annotation.ElementType;
@@ -17,10 +16,10 @@ import java.lang.annotation.Target;
  */
 public interface ITrigger extends Listener, IFunction {
 
-    // Triggers simply pass down the events by default
+    // Triggers simply pass down the events by default, i.e. pass to whatever function linked to it.
     @Override
-    default Event accept(Event e, WrappedItemStack wis) {
-        return e;
+    default WrappedEvent<?> accept(WrappedEvent<?> we) {
+        return we;
     }
 
     @Target(ElementType.TYPE)
