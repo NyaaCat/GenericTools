@@ -1,5 +1,6 @@
 package me.recursiveg.generictools.function;
 
+import cat.nyaa.utils.CommandReceiver;
 import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.Bukkit;
 
@@ -9,6 +10,11 @@ public class FuncCommand implements IFunction {
 
     @Serializable(name = "command")
     public String commandString;
+
+    @Override
+    public void parseCommandLine(CommandReceiver.Arguments args) {
+        commandString = args.nextString();
+    }
 
     @Override
     public String name() {

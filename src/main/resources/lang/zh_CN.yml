@@ -4,6 +4,15 @@ admin:
     cannot_load_single: "无法加载脚本文件 \"%s\""
     rte: "脚本执行错误(%s)%s"
 
+user:
+  missing_template_name: "缺少参数 <名称标识符>"
+  invalid_template_name: "%s 不是有效的模板名称"
+  missing_function: "不能找到Function"
+  invalid_function_type: "%s 不是有效的Function类型"
+  missing_function_idx: "%d 不是有效的Function编号"
+  create:
+    default_template: "没有手持物品模板，已使用默认模板"
+
 function_help:
   javascript:
     description: 接受任意类型事件，并执行Javascript脚本
@@ -27,3 +36,15 @@ manual:
   debug:
     description: "调试命令"
     usage: "/gt debug"
+  create:
+    description: "以当前手持物品为模板，创建一个新的工具模板"
+    usage: "/gt create <名称标识符>"
+  attach:
+    description: "将Function或Trigger添加到工具模板"
+    usage: "/gt attach <模板标识符> <function|trigger> <Function标识符> [Function参数...]"
+  link:
+    description: "创建Function或Trigger传递链"
+    usage: "/gt link <模板标识符> <function|trigger> <Function Indices...> to <Function Indices...>"
+  give:
+    description: "将物品给予玩家"
+    usage: "/gt give <模板标识符> [数量] [to <玩家名称>]"

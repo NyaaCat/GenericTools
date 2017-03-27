@@ -87,4 +87,26 @@ public class ItemTemplate implements ISerializable {
             sec.set(Integer.toString(e.getKey()), e.getValue());
         }
     }
+
+    /**
+     * Add the given function into the function map or trigger map
+     * based on whether it's an ITrigger
+     * A new index is assigned and returned
+     *
+     * @param function the function
+     * @return assigned index
+     */
+    public int attachFunction(IFunction function) {
+        if (function instanceof ITrigger) {
+            int idx = 0;
+            while (triggers.containsKey(idx)) idx++;
+            triggers.put(idx, (ITrigger) function);
+            return idx;
+        } else {
+            int idx = 0;
+            while (functions.containsKey(idx)) idx++;
+            functions.put(idx, function);
+            return idx;
+        }
+    }
 }

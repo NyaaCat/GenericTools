@@ -1,5 +1,6 @@
 package me.recursiveg.generictools.function;
 
+import cat.nyaa.utils.CommandReceiver;
 import me.recursiveg.generictools.GenericTools;
 import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.Bukkit;
@@ -28,6 +29,12 @@ public class FuncJavascript implements IFunction {
     String scriptName;
     @Serializable(name = "script_config")
     String scriptConfig;
+
+    @Override
+    public void parseCommandLine(CommandReceiver.Arguments args) {
+        scriptName = args.nextString();
+        scriptConfig = args.nextString();
+    }
 
     @Override
     public String name() {
