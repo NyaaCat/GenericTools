@@ -1,7 +1,7 @@
 package me.recursiveg.generictools.function;
 
-import cat.nyaa.utils.CommandReceiver;
-import cat.nyaa.utils.ISerializable;
+import cat.nyaa.nyaacore.CommandReceiver;
+import cat.nyaa.nyaacore.configuration.ISerializable;
 import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.event.Event;
 

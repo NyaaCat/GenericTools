@@ -1,6 +1,6 @@
 package me.recursiveg.generictools;
 
-import cat.nyaa.utils.PluginConfigure;
+import cat.nyaa.nyaacore.configuration.PluginConfigure;
 import me.recursiveg.generictools.config.ItemDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
 

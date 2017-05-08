@@ -1,9 +1,9 @@
 package me.recursiveg.generictools;
 
-import cat.nyaa.utils.Internationalization;
+import cat.nyaa.nyaacore.LanguageRepository;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class I18n extends Internationalization {
+public class I18n extends LanguageRepository {
     public static I18n instance = null;
     private String lang = null;
     private final GenericTools plugin;
@@ -38,7 +38,7 @@ public class I18n extends Internationalization {
     }
 
     public static String format(String key, Object... args) {
-        return instance.get(key, args);
+        return instance.getFormatted(key, args);
     }
 }
 

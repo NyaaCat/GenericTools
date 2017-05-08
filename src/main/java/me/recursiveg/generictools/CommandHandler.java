@@ -1,7 +1,7 @@
 package me.recursiveg.generictools;
 
-import cat.nyaa.utils.CommandReceiver;
-import cat.nyaa.utils.Internationalization;
+import cat.nyaa.nyaacore.CommandReceiver;
+import cat.nyaa.nyaacore.LanguageRepository;
 import me.recursiveg.generictools.config.ItemTemplate;
 import me.recursiveg.generictools.function.FuncCommand;
 import me.recursiveg.generictools.function.IFunction;
@@ -20,7 +20,7 @@ import java.util.List;
 public class CommandHandler extends CommandReceiver<GenericTools> {
     private final GenericTools plugin;
 
-    public CommandHandler(GenericTools plugin, Internationalization i18n) {
+    public CommandHandler(GenericTools plugin, LanguageRepository i18n) {
         super(plugin, i18n);
         this.plugin = plugin;
     }
@@ -64,6 +64,7 @@ public class CommandHandler extends CommandReceiver<GenericTools> {
         ItemTemplate template = new ItemTemplate();
         template.item = item;
         plugin.cfg.items.itemMap.put(name, template);
+        plugin.cfg.items.save();
     }
 
     @SubCommand(value = "attach", permission = "gt.command")

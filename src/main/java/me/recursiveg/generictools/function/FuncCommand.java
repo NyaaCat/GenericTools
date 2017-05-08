@@ -1,6 +1,6 @@
 package me.recursiveg.generictools.function;
 
-import cat.nyaa.utils.CommandReceiver;
+import cat.nyaa.nyaacore.CommandReceiver;
 import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.Bukkit;
 

@@ -1,6 +1,6 @@
 package me.recursiveg.generictools.config;
 
-import cat.nyaa.utils.FileConfigure;
+import cat.nyaa.nyaacore.configuration.FileConfigure;
 import me.recursiveg.generictools.GenericTools;
 import me.recursiveg.generictools.runtime.WrappedItemStack;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,24 +40,8 @@ public class ItemDatabase extends FileConfigure {
     }
 
     // Map<TemplateName, Template>: name is case sensitive
+    @Serializable
     public Map<String, ItemTemplate> itemMap = new HashMap<>();
-
-    @Override
-    public void deserialize(ConfigurationSection config) {
-        itemMap = new HashMap<>();
-        for (String itemKey : config.getKeys(false)) {
-            ItemTemplate template = new ItemTemplate();
-            template.deserialize(config.getConfigurationSection(itemKey));
-            itemMap.put(itemKey, template);
-        }
-    }
-
-    @Override
-    public void serialize(ConfigurationSection config) {
-        for (String itemKey : itemMap.keySet()) {
-            itemMap.get(itemKey).serialize(config.createSection(itemKey));
-        }
-    }
 
     /**
      * Look up the database for associated ItemTemplate for given ItemStack

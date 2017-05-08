@@ -40,6 +40,5 @@ public class GenericTools extends JavaPlugin {
         getCommand(PLUGIN_COMMAND_NAME).setTabCompleter(null);
         HandlerList.unregisterAll(this);
         cfg.save();
-        i18n.reset();
     }
 }

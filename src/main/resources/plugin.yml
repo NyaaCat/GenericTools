@@ -1,8 +1,8 @@
 name: GenericTools
 main: me.recursiveg.generictools.GenericTools
 description: "Create highly customizable weapons and tools"
-version: 0.1
-depend: [NyaaUtils]
+version: 0.2
+depend: [NyaaCore]
 authors: [RecursiveG]
 
 commands:

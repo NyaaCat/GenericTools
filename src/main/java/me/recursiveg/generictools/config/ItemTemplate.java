@@ -1,6 +1,6 @@
 package me.recursiveg.generictools.config;
 
-import cat.nyaa.utils.ISerializable;
+import cat.nyaa.nyaacore.configuration.ISerializable;
 import me.recursiveg.generictools.GenericTools;
 import me.recursiveg.generictools.function.IFunction;
 import me.recursiveg.generictools.trigger.ITrigger;
@@ -65,6 +65,7 @@ public class ItemTemplate implements ISerializable {
 
     @Override
     public void serialize(ConfigurationSection config) {
+        config.set(TYPE_KEY, this.getClass().getName());
         config.set("item", item);
         ConfigurationSection sec = config.createSection("triggers");
         for (Map.Entry<Integer, ITrigger> e : triggers.entrySet()) {

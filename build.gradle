@@ -2,6 +2,7 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+archivesBaseName = 'GenericTools-spigot1.11.2'
 
 repositories {
     jcenter()
@@ -10,24 +11,21 @@ repositories {
         name 'Spigot'
         url 'https://hub.spigotmc.org/nexus/content/groups/public/'
     }
-    
-    maven {
-        name 'nyaa'
-        url 'https://raw.githubusercontent.com/NyaaCat/nyaautils/maven-repo'
-    }
-    
+
     maven {
         name 'Sonatype'
         url 'https://oss.sonatype.org/content/groups/public'
     }
-}
 
-archivesBaseName = 'GenericTools-spigot1.11.2'
-version = '0.1'
+    maven {
+        name 'NyaaCore'
+        url 'https://raw.githubusercontent.com/NyaaCat/NyaaCore/maven-repo'
+    }
+}
 
 dependencies {
     compile 'org.spigotmc:spigot-api:1.11.2-R0.1-SNAPSHOT'
-    compile('cat.nyaa:nyaautils:2.0-SNAPSHOT') {
+    compile('cat.nyaa:nyaacore:2.0-SNAPSHOT') {
         transitive = false
     }
 }
