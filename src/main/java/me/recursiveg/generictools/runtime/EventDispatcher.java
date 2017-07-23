@@ -52,6 +52,7 @@ public final class EventDispatcher {
                 passEvent(ret.getChainCopy(), ret.itemTemplate.functions.get(funcIdx), ret.itemTemplate.functionToFunctionPath.get(funcIdx));
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             // TODO
         }
     }
@@ -59,11 +60,14 @@ public final class EventDispatcher {
     /**
      * Update the item lore of the WrappedItemStack according to the template & param map.
      *
+     * TODO collect parameters on events may not be a good idea
+     *
      * @param template GT template
      * @param params lore params
      * @param wis target wis
+     * @deprecated see TODO
      */
-    private static void updateLoreDisplay(ItemTemplate template, Map<String, String> params, WrappedItemStack wis) {
+    public static void updateLoreDisplay(ItemTemplate template, Map<String, String> params, WrappedItemStack wis) {
         if (!template.updateLores) return;
         if (!template.item.getItemMeta().hasLore()) wis.getItem().getItemMeta().setLore(new ArrayList<>());
         List<String> newLore = template.item.getItemMeta().getLore().stream().map(line -> {

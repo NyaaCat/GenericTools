@@ -40,8 +40,6 @@ user:
         /gt modify <模板标识符> updateTemplate
 
 
-
-
 function_help:
   javascript:
     description: 接受任意类型事件，并执行Javascript脚本
@@ -55,12 +53,17 @@ function_help:
     description: 接受任意类型事件，并消耗一个物品
     commandline:
     info_string: 消耗一个物品
+  cooldown:
+    description: 接受任意类型事件，仅当冷却时间结束后允许事件链下传
+    commandline:
+    info_string: 冷却计时器(%d秒) ID=%s
+    cd_not_end: 冷却时间未结束，剩余%.2f秒
 
 trigger_help:
   right_click_air:
     description: 当玩家持有工具并右键空气时，触发PlayerInteractEvent
     commandline:
-    info_string: 右键空气时触发相关事件
+    info_string: 右键空气时触发事件
 
 manual:
   no_description: "缺少描述"

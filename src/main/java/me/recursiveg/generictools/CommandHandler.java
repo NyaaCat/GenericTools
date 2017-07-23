@@ -84,9 +84,19 @@ public class CommandHandler extends CommandReceiver {
     public void linkFunctions(CommandSender sender, Arguments args) {
         ItemTemplate template = nextItemTemplate(args);
         String type = args.next();
-        List<Integer> srcIdx = nextIntegerList(args, "to");
-        args.next();
-        List<Integer> dstIdx = nextIntegerList(args, null);
+        List<List<Integer>> indices = new ArrayList<>();
+        indices.add(nextIntegerList(args, "to"));
+        indices.add(nextIntegerList(args, "to"));
+        while (args.top() != null) indices.add(nextIntegerList(args, "to"));
+
+        linkFunctions(template, type, indices.get(0), indices.get(1));
+        for (int i = 1; i <= indices.size() - 2; i++)
+            linkFunctions(template, "function", indices.get(i), indices.get(i + 1));
+
+        plugin.cfg.items.save();
+    }
+
+    private void linkFunctions(ItemTemplate template, String type, List<Integer> srcIdx, List<Integer> dstIdx) {
         if ("function".startsWith(type)) {
             for (Integer idx : srcIdx)
                 if (!template.functions.containsKey(idx))
@@ -112,7 +122,6 @@ public class CommandHandler extends CommandReceiver {
                     template.triggerToFunctionPath.put(idx, new ArrayList<>());
                 template.triggerToFunctionPath.get(idx).addAll(dstIdx);
             }
-            plugin.cfg.items.save();
         } else {
             throw new BadCommandException("user.invalid_function_type", type);
         }
@@ -282,12 +291,22 @@ public class CommandHandler extends CommandReceiver {
         return ret;
     }
 
+    /**
+     * Take in a list of integers.
+     * If the `end` term is specified, it will also be consumed.
+     * If null specified for end, it will consume until the end of the argument.
+     *
+     * @param args commandline arguments
+     * @param end end term, can be null
+     * @return a list of integers.
+     */
     private List<Integer> nextIntegerList(Arguments args, String end) {
         List<Integer> list = new ArrayList<>();
         if (end == null) {
             while (args.top() != null) list.add(args.nextInt());
         } else {
             while (args.top() != null && !end.equals(args.top())) list.add(args.nextInt());
+            if (args.top() != null) args.nextAssert(end);
         }
         return list;
     }

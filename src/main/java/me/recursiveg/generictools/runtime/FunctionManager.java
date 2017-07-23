@@ -1,10 +1,7 @@
 package me.recursiveg.generictools.runtime;
 
 import me.recursiveg.generictools.GenericTools;
-import me.recursiveg.generictools.function.FuncCommand;
-import me.recursiveg.generictools.function.FuncConsume;
-import me.recursiveg.generictools.function.FuncJavascript;
-import me.recursiveg.generictools.function.IFunction;
+import me.recursiveg.generictools.function.*;
 import me.recursiveg.generictools.trigger.ITrigger;
 import me.recursiveg.generictools.trigger.TrigRightClickAir;
 
@@ -19,7 +16,8 @@ public class FunctionManager {
     public static final Class BUILTIN_FUNCTIONS[] = {
             FuncJavascript.class,
             FuncCommand.class,
-            FuncConsume.class
+            FuncConsume.class,
+            FuncCooldown.class
     };
 
     public static final Class BUILTIN_TRIGGERS[] = {
