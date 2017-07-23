@@ -2,6 +2,7 @@ package me.recursiveg.generictools.runtime;
 
 import me.recursiveg.generictools.GenericTools;
 import me.recursiveg.generictools.function.FuncCommand;
+import me.recursiveg.generictools.function.FuncConsume;
 import me.recursiveg.generictools.function.FuncJavascript;
 import me.recursiveg.generictools.function.IFunction;
 import me.recursiveg.generictools.trigger.ITrigger;
@@ -17,7 +18,8 @@ import java.util.Map;
 public class FunctionManager {
     public static final Class BUILTIN_FUNCTIONS[] = {
             FuncJavascript.class,
-            FuncCommand.class
+            FuncCommand.class,
+            FuncConsume.class
     };
 
     public static final Class BUILTIN_TRIGGERS[] = {

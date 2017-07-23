@@ -171,14 +171,24 @@ public class CommandHandler extends CommandReceiver {
     private void printInspect(ItemTemplate template, String templateName, CommandSender sender) {
         msg(sender, "user.inspect.msg_tmpl_header");
         msg(sender, "user.inspect.msg_tmpl_name", templateName);
-        msg(sender, "user.inspect.msg_tmpl_desc", "Not Implemented");
+        msg(sender, "user.inspect.msg_tmpl_desc", "[[Not Implemented]]");
         new Message("").append(I18n.format("user.inspect.msg_tmpl_tmpl"), template.item.clone());
-        for (Integer idx : template.functions.keySet()) {
-            msg(sender, "user.inspect.msg_tmpl_func", idx, template.functions.get(idx).name());
+        template.functions.keySet().stream().sorted().forEach(idx -> {
+            IFunction f = template.functions.get(idx);
+            msg(sender, "user.inspect.msg_tmpl_func", idx, f.name(), f.getInfoString());
+        });
+        template.triggers.keySet().stream().sorted().forEach(idx -> {
+            IFunction f = template.triggers.get(idx);
+            msg(sender, "user.inspect.msg_tmpl_trig", idx, f.name(), f.getInfoString());
+        });
+        msg(sender, "user.inspect.msg_tmpl_chain_header");
+        for (String s : getEventChainDiagram(template)) {
+            sender.sendMessage(s);
         }
-        for (Integer idx : template.triggers.keySet()) {
-            msg(sender, "user.inspect.msg_tmpl_trig", idx, template.triggers.get(idx).name());
-        }
+    }
+
+    private static List<String> getEventChainDiagram(ItemTemplate template) {
+        return Collections.singletonList("[[Not Implemented]]");
     }
 
     private void printInspect(WrappedItemStack wis, CommandSender sender) {
@@ -217,6 +227,30 @@ public class CommandHandler extends CommandReceiver {
                 break;
             default:
                 throw new BadCommandException("user.list.invalid_arg", type);
+        }
+    }
+
+    @SubCommand(value = "modify", permission = "gt.command")
+    public void modifyCommand(CommandSender sender, Arguments args) {
+        if (args.top() == null) {
+            msg(sender, "user.modify.full_help");
+            return;
+        }
+        ItemTemplate t = nextItemTemplate(args);
+        String mode = args.nextString();
+        switch(mode) {
+            case "updateLore":
+                boolean v = args.nextBoolean();
+                t.updateLores = v;
+                plugin.cfg.items.save();
+                break;
+            case "updateTemplate":
+                ItemStack i = getItemInHand(sender).clone();
+                t.item = i;
+                plugin.cfg.items.save();
+                break;
+            default:
+                msg(sender, "user.modify.full_help");
         }
     }
 

@@ -36,6 +36,13 @@ public class WrappedItemStack extends NBTCompound {
      * issuing this call after all changes is necessary.
      */
     public void commit() {
+        int amount = shadowItemStack.getAmount();
+        if (amount < 0) amount = 0;
+        wrappedItemStack.setAmount(amount);
         wrappedItemStack.setItemMeta(shadowItemStack.getItemMeta());
+    }
+
+    public ItemStack getRealItemStack() {
+        return wrappedItemStack;
     }
 }

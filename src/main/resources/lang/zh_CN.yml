@@ -15,11 +15,12 @@ user:
   inspect:
     not_gt_item: "手持物品不是GenericTool"
     msg_tmpl_header: "=== 物品模板信息 ==="
-    msg_tmpl_name: "ToolName: %s"
-    msg_tmpl_desc: "ToolDesc: %s"
-    msg_tmpl_tmpl: "ToolTmpl: {itemName}*{amount}"
-    msg_tmpl_func: "Func@%d %s"
-    msg_tmpl_trig: "Trig@%d %s"
+    msg_tmpl_name: "模版名称: %s"
+    msg_tmpl_desc: "模版描述: %s"
+    msg_tmpl_tmpl: "模版物品: {itemName} *{amount}"
+    msg_tmpl_func: "函数(位置%d)%s: %s"
+    msg_tmpl_trig: "触发器(位置%d)%s: %s"
+    msg_tmpl_chain_header: "事件调用链:"
 
     msg_item_header: "=== 物品实例信息 ==="
     msg_item_nbt: "NBT data: %s"
@@ -31,6 +32,13 @@ user:
     func_item: "%s: %s"
     trig_item: "%s: %s"
     invalid_arg: "无效参数: %s"
+  modify:
+    full_help: |
+      开启／关闭LORE更新：
+        /gt modify <模板标识符> updateLore <true|false>
+      用手中的物品更新模版：
+        /gt modify <模板标识符> updateTemplate
+
 
 
 
@@ -38,14 +46,21 @@ function_help:
   javascript:
     description: 接受任意类型事件，并执行Javascript脚本
     commandline:
+    info_string: 执行脚本 "%s" 参数 "%s"
   command:
     description: 接受任意类型事件，并以控制台身份执行命令
     commandline:
+    info_string: 执行命令 "%s"
+  consume:
+    description: 接受任意类型事件，并消耗一个物品
+    commandline:
+    info_string: 消耗一个物品
 
 trigger_help:
   right_click_air:
     description: 当玩家持有工具并右键空气时，触发PlayerInteractEvent
     commandline:
+    info_string: 右键空气时触发相关事件
 
 manual:
   no_description: "缺少描述"
@@ -75,3 +90,7 @@ manual:
   list:
     description: "列出可用的触发器／模版"
     usage: "/gt list <functions|triggers|templates>"
+  modify:
+    description: "修改物品模版"
+    usage: "/gt modify [模板标识符] [参数...]"
+

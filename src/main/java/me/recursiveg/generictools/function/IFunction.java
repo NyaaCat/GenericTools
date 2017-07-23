@@ -2,7 +2,9 @@ package me.recursiveg.generictools.function;
 
 import cat.nyaa.nyaacore.CommandReceiver;
 import cat.nyaa.nyaacore.configuration.ISerializable;
+import me.recursiveg.generictools.I18n;
 import me.recursiveg.generictools.runtime.WrappedEvent;
+import me.recursiveg.generictools.trigger.ITrigger;
 import org.bukkit.event.Event;
 
 import java.lang.annotation.ElementType;
@@ -84,5 +86,9 @@ public interface IFunction extends ISerializable {
     @Retention(RetentionPolicy.RUNTIME)
     @interface Function {
         String value(); // function name
+    }
+
+    default String getInfoString() {
+        return I18n.format((this instanceof ITrigger? "trigger" : "function") + "_help." + name() + ".info_string");
     }
 }

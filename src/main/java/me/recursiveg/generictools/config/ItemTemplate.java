@@ -23,6 +23,9 @@ import java.util.Map;
 public class ItemTemplate implements ISerializable {
     @Serializable
     public ItemStack item = new ItemStack(Material.AIR);
+    @Serializable
+    public boolean updateLores = false; // whether to update lore on events
+
     @Serializable(manualSerialization = true)
     public Map<Integer, ITrigger> triggers = new HashMap<>();
     @Serializable(manualSerialization = true)
@@ -34,6 +37,7 @@ public class ItemTemplate implements ISerializable {
 
     @Override
     public void deserialize(ConfigurationSection config) {
+        ISerializable.deserialize(config, this);
         item = config.getItemStack("item");
         ConfigurationSection sec;
         sec = config.getConfigurationSection("triggers");
@@ -66,6 +70,7 @@ public class ItemTemplate implements ISerializable {
 
     @Override
     public void serialize(ConfigurationSection config) {
+        ISerializable.serialize(config, this);
         config.set(RESERVED_TYPE_KEY, this.getClass().getName());
         config.set("item", item);
         ConfigurationSection sec = config.createSection("triggers");

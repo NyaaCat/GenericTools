@@ -2,6 +2,7 @@ package me.recursiveg.generictools.function;
 
 import cat.nyaa.nyaacore.CommandReceiver;
 import me.recursiveg.generictools.GenericTools;
+import me.recursiveg.generictools.I18n;
 import me.recursiveg.generictools.runtime.WrappedEvent;
 import org.bukkit.Bukkit;
 
@@ -50,5 +51,10 @@ public class FuncJavascript implements IFunction {
             GenericTools.instance.i18n.severe("admin.script.rte", scriptName, we.event.toString());
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public String getInfoString() {
+        return I18n.format("function_help.javascript.info_string", scriptName, scriptConfig);
     }
 }
