@@ -66,4 +66,12 @@ public class ItemDatabase extends FileConfigure {
         wis.commit();
         return item;
     }
+
+    /**
+     * Read the name field from item NBT.
+     * Existence of template is not guaranteed.
+     */
+    static public String getTemplateName(ItemStack stack) {
+        return new WrappedItemStack(stack).getString("giSection.templateName");
+    }
 }

@@ -12,13 +12,34 @@ user:
   missing_function_idx: "%d 不是有效的Function编号"
   create:
     default_template: "没有手持物品模板，已使用默认模板"
+  inspect:
+    not_gt_item: "手持物品不是GenericTool"
+    msg_tmpl_header: "=== 物品模板信息 ==="
+    msg_tmpl_name: "ToolName: %s"
+    msg_tmpl_desc: "ToolDesc: %s"
+    msg_tmpl_tmpl: "ToolTmpl: {itemName}*{amount}"
+    msg_tmpl_func: "Func@%d %s"
+    msg_tmpl_trig: "Trig@%d %s"
+
+    msg_item_header: "=== 物品实例信息 ==="
+    msg_item_nbt: "NBT data: %s"
+  list:
+    tmpl_header: "=== 列出物品模板 ==="
+    func_header: "=== 列出函数 ==="
+    trig_header: "=== 列出触发器 ==="
+    tmpl_item: "%s: "
+    func_item: "%s: %s"
+    trig_item: "%s: %s"
+    invalid_arg: "无效参数: %s"
+
+
 
 function_help:
   javascript:
     description: 接受任意类型事件，并执行Javascript脚本
     commandline:
   command:
-    desctiption: 接受任意类型事件，并以控制台身份执行命令
+    description: 接受任意类型事件，并以控制台身份执行命令
     commandline:
 
 trigger_help:
@@ -38,7 +59,7 @@ manual:
     usage: "/gt debug"
   create:
     description: "以当前手持物品为模板，创建一个新的工具模板"
-    usage: "/gt create <名称标识符>"
+    usage: "/gt create <模板标识符>"
   attach:
     description: "将Function或Trigger添加到工具模板"
     usage: "/gt attach <模板标识符> <function|trigger> <Function标识符> [Function参数...]"
@@ -48,3 +69,9 @@ manual:
   give:
     description: "将物品给予玩家"
     usage: "/gt give <模板标识符> [数量] [to <玩家名称>]"
+  inspect:
+    description: "检查手中的物品或物品模版"
+    usage: "/gt inspect [模板标识符]"
+  list:
+    description: "列出可用的触发器／模版"
+    usage: "/gt list <functions|triggers|templates>"

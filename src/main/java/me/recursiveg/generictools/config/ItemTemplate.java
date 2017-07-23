@@ -7,6 +7,7 @@ import me.recursiveg.generictools.trigger.ITrigger;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.omg.CORBA.INVALID_TRANSACTION;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +66,7 @@ public class ItemTemplate implements ISerializable {
 
     @Override
     public void serialize(ConfigurationSection config) {
-        config.set(TYPE_KEY, this.getClass().getName());
+        config.set(RESERVED_TYPE_KEY, this.getClass().getName());
         config.set("item", item);
         ConfigurationSection sec = config.createSection("triggers");
         for (Map.Entry<Integer, ITrigger> e : triggers.entrySet()) {
@@ -89,20 +90,30 @@ public class ItemTemplate implements ISerializable {
         }
     }
 
+    public int attachFunction(IFunction function) {
+        return attachFunction(function, function instanceof ITrigger);
+    }
+
     /**
      * Add the given function into the function map or trigger map
      * based on whether it's an ITrigger
      * A new index is assigned and returned
      *
      * @param function the function
+     * @param asTrigger the function is a trigger
      * @return assigned index
      */
-    public int attachFunction(IFunction function) {
-        if (function instanceof ITrigger) {
-            int idx = 0;
-            while (triggers.containsKey(idx)) idx++;
-            triggers.put(idx, (ITrigger) function);
-            return idx;
+    public int attachFunction(IFunction function, boolean asTrigger) {
+        if (function == null) throw new IllegalArgumentException();
+        if (asTrigger) {
+            if (function instanceof ITrigger) {
+                int idx = 0;
+                while (triggers.containsKey(idx)) idx++;
+                triggers.put(idx, (ITrigger) function);
+                return idx;
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else {
             int idx = 0;
             while (functions.containsKey(idx)) idx++;
