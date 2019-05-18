@@ -6,6 +6,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Configuration extends PluginConfigure {
     private final GenericTools plugin;
+    @Serializable
+    public String language = "zh_CN";
+    @StandaloneConfig
+    public ItemDatabase items;
 
     public Configuration(GenericTools plugin) {
         this.plugin = plugin;
@@ -16,10 +20,4 @@ public class Configuration extends PluginConfigure {
     protected JavaPlugin getPlugin() {
         return plugin;
     }
-
-    @Serializable
-    public String language = "zh_CN";
-
-    @StandaloneConfig
-    public ItemDatabase items;
 }

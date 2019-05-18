@@ -2,24 +2,18 @@ package me.recursiveg.generictools;
 
 import cat.nyaa.nyaacore.CommandReceiver;
 import cat.nyaa.nyaacore.LanguageRepository;
-import cat.nyaa.nyaacore.Message;
-import me.recursiveg.generictools.config.ItemDatabase;
+import cat.nyaa.nyaacore.Pair;
 import me.recursiveg.generictools.config.ItemTemplate;
-import me.recursiveg.generictools.function.FuncCommand;
-import me.recursiveg.generictools.function.IFunction;
-import me.recursiveg.generictools.runtime.WrappedItemStack;
-import me.recursiveg.generictools.trigger.ITrigger;
-import me.recursiveg.generictools.trigger.TrigRightClickAir;
+import me.recursiveg.generictools.runtime.GenericToolInstance;
+import me.recursiveg.generictools.triggers.RightClickAirTrigger;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class CommandHandler extends CommandReceiver {
     private final GenericTools plugin;
@@ -29,6 +23,10 @@ public class CommandHandler extends CommandReceiver {
         this.plugin = plugin;
     }
 
+    private static List<String> getEventChainDiagram(ItemTemplate template) {
+        return Collections.singletonList("[[Not Implemented]]");
+    }
+
     @Override
     public String getHelpPrefix() {
         return "";
@@ -36,18 +34,24 @@ public class CommandHandler extends CommandReceiver {
 
     @SubCommand("debug")
     public void debugCommand(CommandSender sender, Arguments args) {
-        asPlayer(sender);
-        ITrigger trig = new TrigRightClickAir();
-        FuncCommand cmd = new FuncCommand();
-        cmd.commandString = "say hi";
         ItemStack item = new ItemStack(Material.STICK);
-        ItemTemplate temp = new ItemTemplate();
-        temp.item = item;
-        temp.functions.put(0, cmd);
-        temp.triggers.put(0, trig);
-        temp.triggerToFunctionPath.put(0, Collections.singletonList(0));
-        plugin.cfg.items.itemMap.put("test", temp);
-        asPlayer(sender).getLocation().getWorld().dropItem(asPlayer(sender).getLocation(), plugin.cfg.items.instantiate("test"));
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("The Generic Crowbar");
+        item.setItemMeta(meta);
+
+        ItemTemplate template = new ItemTemplate();
+        template.item = item;
+        template.actions = Collections.singletonList(Pair.of(new RightClickAirTrigger(), "command(ctx, \"say hello\")"));
+        plugin.cfg.items.itemMap.put("test", template);
+        plugin.cfg.items.save();
+
+        GenericToolInstance gti = GenericToolInstance.fromTemplate("test");
+        asPlayer(sender).getLocation().getWorld().dropItem(asPlayer(sender).getEyeLocation(), gti.getItemStack());
+    }
+
+    public void printSelf(int i) {
+        plugin.getLogger().info("i=" + String.valueOf(i) + " self=" + this.toString());
+        throw new RuntimeException("???");
     }
 
     @SubCommand(value = "create", permission = "gt.command")
@@ -71,198 +75,6 @@ public class CommandHandler extends CommandReceiver {
         plugin.cfg.items.save();
     }
 
-    @SubCommand(value = "attach", permission = "gt.command")
-    public void attachFunction(CommandSender sender, Arguments args) {
-        ItemTemplate template = nextItemTemplate(args);
-        IFunction func = getFunction(args.next(), args.next());
-        func.parseCommandLine(args);
-        template.attachFunction(func);
-        plugin.cfg.items.save();
-    }
-
-    @SubCommand(value = "link", permission = "gt.command")
-    public void linkFunctions(CommandSender sender, Arguments args) {
-        ItemTemplate template = nextItemTemplate(args);
-        String type = args.next();
-        List<List<Integer>> indices = new ArrayList<>();
-        indices.add(nextIntegerList(args, "to"));
-        indices.add(nextIntegerList(args, "to"));
-        while (args.top() != null) indices.add(nextIntegerList(args, "to"));
-
-        linkFunctions(template, type, indices.get(0), indices.get(1));
-        for (int i = 1; i <= indices.size() - 2; i++)
-            linkFunctions(template, "function", indices.get(i), indices.get(i + 1));
-
-        plugin.cfg.items.save();
-    }
-
-    private void linkFunctions(ItemTemplate template, String type, List<Integer> srcIdx, List<Integer> dstIdx) {
-        if ("function".startsWith(type)) {
-            for (Integer idx : srcIdx)
-                if (!template.functions.containsKey(idx))
-                    throw new BadCommandException("user.missing_function_idx", idx);
-            for (Integer idx : dstIdx)
-                if (!template.functions.containsKey(idx))
-                    throw new BadCommandException("user.missing_function_idx", idx);
-            for (Integer idx : srcIdx) {
-                if (!template.functionToFunctionPath.containsKey(idx))
-                    template.functionToFunctionPath.put(idx, new ArrayList<>());
-                template.functionToFunctionPath.get(idx).addAll(dstIdx);
-            }
-            plugin.cfg.items.save();
-        } else if ("trigger".startsWith(type)) {
-            for (Integer idx : srcIdx)
-                if (!template.triggers.containsKey(idx))
-                    throw new BadCommandException("user.missing_function_idx", idx);
-            for (Integer idx : dstIdx)
-                if (!template.functions.containsKey(idx))
-                    throw new BadCommandException("user.missing_function_idx", idx);
-            for (Integer idx : srcIdx) {
-                if (!template.triggerToFunctionPath.containsKey(idx))
-                    template.triggerToFunctionPath.put(idx, new ArrayList<>());
-                template.triggerToFunctionPath.get(idx).addAll(dstIdx);
-            }
-        } else {
-            throw new BadCommandException("user.invalid_function_type", type);
-        }
-    }
-
-    @SubCommand(value = "give", permission = "gt.command")
-    public void giveToolToPlayer(CommandSender sender, Arguments args) {
-        String name = args.top();
-        ItemStack item = plugin.cfg.items.instantiate(args.next());
-        if (item == null) throw new BadCommandException("user.invalid_template_name", name);
-
-        if (args.top() == null) {
-            Player p = asPlayer(sender);
-            p.getLocation().getWorld().dropItem(p.getLocation(), item);
-            return;
-        }
-        if ("to".equalsIgnoreCase(args.top())) {
-            args.next();
-            Player p = args.nextPlayer();
-            p.getLocation().getWorld().dropItem(p.getLocation(), item);
-            return;
-        }
-        int amount = args.nextInt();
-        if ("to".equalsIgnoreCase(args.top())) {
-            args.next();
-            Player p = args.nextPlayer();
-            for (int i = 0; i < amount; i++) {
-                p.getLocation().getWorld().dropItem(p.getLocation(), item.clone());
-            }
-        } else {
-            Player p = asPlayer(sender);
-            for (int i = 0; i < amount; i++) {
-                p.getLocation().getWorld().dropItem(p.getLocation(), item.clone());
-            }
-        }
-    }
-
-    @SubCommand(value = "inspect", permission = "gt.command")
-    public void inspectItems(CommandSender sender, Arguments args) {
-        if (args.top() == null) { // check item in hand
-            ItemStack item = getItemInHand(sender);
-            String name = ItemDatabase.getTemplateName(item);
-            if (name == null) throw new BadCommandException("user.inspect.not_gt_item");
-            ItemTemplate template = plugin.cfg.items.itemMap.get(name);
-            if (template == null) throw new BadCommandException("user.inspect.not_gt_item");
-            printInspect(template, name, sender);
-            WrappedItemStack wis = new WrappedItemStack(item);
-            printInspect(wis, sender);
-        } else {
-            String name = args.top();
-            ItemTemplate template = nextItemTemplate(args);
-            printInspect(template, name, sender);
-        }
-    }
-
-    private void printInspect(ItemTemplate template, String templateName, CommandSender sender) {
-        msg(sender, "user.inspect.msg_tmpl_header");
-        msg(sender, "user.inspect.msg_tmpl_name", templateName);
-        msg(sender, "user.inspect.msg_tmpl_desc", "[[Not Implemented]]");
-        new Message("").append(I18n.format("user.inspect.msg_tmpl_tmpl"), template.item.clone());
-        template.functions.keySet().stream().sorted().forEach(idx -> {
-            IFunction f = template.functions.get(idx);
-            msg(sender, "user.inspect.msg_tmpl_func", idx, f.name(), f.getInfoString());
-        });
-        template.triggers.keySet().stream().sorted().forEach(idx -> {
-            IFunction f = template.triggers.get(idx);
-            msg(sender, "user.inspect.msg_tmpl_trig", idx, f.name(), f.getInfoString());
-        });
-        msg(sender, "user.inspect.msg_tmpl_chain_header");
-        for (String s : getEventChainDiagram(template)) {
-            sender.sendMessage(s);
-        }
-    }
-
-    private static List<String> getEventChainDiagram(ItemTemplate template) {
-        return Collections.singletonList("[[Not Implemented]]");
-    }
-
-    private void printInspect(WrappedItemStack wis, CommandSender sender) {
-        msg(sender, "user.inspect.msg_item_header");
-        for (String key : wis.getCompound("giSection").getKeys()) {
-            msg(sender, "user.inspect.msg_item_nbt", "giSection." + key);
-        }
-        sender.sendMessage("WIS inspect WIP");
-    }
-
-    @SubCommand(value = "list", permission = "gt.command")
-    public void listCommand(CommandSender sender, Arguments args) {
-        String type = args.nextString();
-        switch (type) {
-            case "templates":
-            case "tmpl":
-                msg(sender, "user.list.tmpl_header");
-                plugin.cfg.items.itemMap.keySet().stream().sorted().forEach(name -> {
-                    ItemStack template = plugin.cfg.items.itemMap.get(name).item.clone();
-                    new Message(I18n.format("user.list.tmpl_item", name)).append(template).send(sender);
-                });
-                break;
-            case "functions":
-            case "func":
-                msg(sender, "user.list.func_header");
-                plugin.funcMgr.functions.keySet().stream().sorted().forEach(name -> {
-                    msg(sender, "user.list.func_item", name, I18n.format("function_help." + name + ".description"));
-                });
-                break;
-            case "triggers":
-            case "trig":
-                msg(sender, "user.list.trig_header");
-                plugin.funcMgr.triggers.keySet().stream().sorted().forEach(name -> {
-                    msg(sender, "user.list.trig_item", name, I18n.format("trigger_help." + name + ".description"));
-                });
-                break;
-            default:
-                throw new BadCommandException("user.list.invalid_arg", type);
-        }
-    }
-
-    @SubCommand(value = "modify", permission = "gt.command")
-    public void modifyCommand(CommandSender sender, Arguments args) {
-        if (args.top() == null) {
-            msg(sender, "user.modify.full_help");
-            return;
-        }
-        ItemTemplate t = nextItemTemplate(args);
-        String mode = args.nextString();
-        switch(mode) {
-            case "updateLore":
-                boolean v = args.nextBoolean();
-                t.updateLores = v;
-                plugin.cfg.items.save();
-                break;
-            case "updateTemplate":
-                ItemStack i = getItemInHand(sender).clone();
-                t.item = i;
-                plugin.cfg.items.save();
-                break;
-            default:
-                msg(sender, "user.modify.full_help");
-        }
-    }
-
     private ItemTemplate nextItemTemplate(Arguments args) {
         String str = args.next();
         if (str == null) throw new BadCommandException("user.missing_template_name");
@@ -272,32 +84,12 @@ public class CommandHandler extends CommandReceiver {
     }
 
     /**
-     * @param type can only be "function" or "trigger"
-     * @param name name of that function
-     * @return the function
-     * @throws BadCommandException if no function can be found
-     */
-    private IFunction getFunction(String type, String name) {
-        if (type == null || name == null) throw new BadCommandException("user.missing_function");
-        IFunction ret;
-        if ("function".startsWith(type)) {
-            ret = plugin.funcMgr.getFunctionInstance(name);
-        } else if ("trigger".startsWith(type)) {
-            ret = plugin.funcMgr.getTriggerInstance(name);
-        } else {
-            throw new BadCommandException("user.invalid_function_type", type);
-        }
-        if (ret == null) throw new BadCommandException("user.missing_function");
-        return ret;
-    }
-
-    /**
      * Take in a list of integers.
      * If the `end` term is specified, it will also be consumed.
      * If null specified for end, it will consume until the end of the argument.
      *
      * @param args commandline arguments
-     * @param end end term, can be null
+     * @param end  end term, can be null
      * @return a list of integers.
      */
     private List<Integer> nextIntegerList(Arguments args, String end) {
